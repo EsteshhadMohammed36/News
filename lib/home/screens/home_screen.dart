@@ -39,7 +39,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ? CategoriesView(
               onCategorySelected: onCategorySelected,
             )
-          : NewsView(),
+          : NewsView(
+              categoryId: selectedCategory!.id,
+            ),
     );
   }
 
