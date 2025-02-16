@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:news/app_theme.dart';
+import 'package:news/utils/app_theme.dart';
 
 class DrawerItem extends StatelessWidget {
   String iconName;
