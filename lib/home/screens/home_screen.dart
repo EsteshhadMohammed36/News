@@ -22,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       appBar: AppBar(
         title: Text(
-          selectedCategory == null ? "Home" : selectedCategory!.name,
+          selectedCategory == null ? "Home" : selectedCategory!.id,
         ),
         actions: [
           Icon(
@@ -39,7 +39,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ? CategoriesView(
               onCategorySelected: onCategorySelected,
             )
-          : NewsView(),
+          : NewsView(
+              categoryId: selectedCategory!.id,
+            ),
     );
   }
 

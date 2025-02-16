@@ -1,14 +1,18 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:news/app_theme.dart';
+import 'package:news/models/NewsResponse.dart';
+import 'package:news/utils/app_theme.dart';
+import 'package:news/utils/loading_indicator.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class NewsItem extends StatelessWidget {
-  const NewsItem({super.key});
+  NewsItem({required this.news});
+
+  News news;
 
   @override
   Widget build(BuildContext context) {
     var textTheme = Theme.of(context).textTheme;
-    final dateTimeAgo = DateTime.now().subtract(Duration(minutes: 15));
 
     return Container(
         padding: EdgeInsets.all(8),
@@ -17,24 +21,34 @@ class NewsItem extends StatelessWidget {
             border: Border.all(width: 1, color: AppTheme.darkColor)),
         child:
             Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Image.asset("assets/images/new.png",
-              fit: BoxFit.cover, width: double.infinity),
+          CachedNetworkImage(
+            imageUrl: news.urlToImage ?? "",
+            placeholder: (context, url) => LoadingIndicator(),
+            errorWidget: (context, url, error) => Icon(Icons.error),
+          ),
+          // Image.network(news.urlToImage ?? '',
+          //     fit: BoxFit.cover, width: double.infinity),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Text(
-                style: textTheme.bodyLarge,
-                "40-year-old man falls 200 feet to his death while canyoneering at national park"),
+            child: Text(style: textTheme.bodyLarge, news.title),
           ),
           Row(
             children: [
-              Text(
-                "By : Jon Haworth",
-                style: textTheme.bodySmall,
+              Expanded(
+                flex: 50,
+                child: Text(
+                  "By : ${news.author}",
+                  style: textTheme.bodySmall,
+                ),
               ),
               Spacer(),
-              Text(
-                timeago.format(dateTimeAgo),
-                style: textTheme.bodySmall,
+              Expanded(
+                flex: 50,
+                child: Text(
+                  textAlign: TextAlign.end,
+                  timeago.format(news.publishedAt),
+                  style: textTheme.bodySmall,
+                ),
               ),
             ],
           )
