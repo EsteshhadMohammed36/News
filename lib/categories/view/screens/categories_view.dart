@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:news/home/widgets/category_item.dart';
-import 'package:news/models/category.dart';
-import 'package:news/utils/loading_indicator.dart';
+import 'package:news/categories/data/models/category.dart';
+import 'package:news/categories/view/widgets/category_item.dart';
+import 'package:news/shared/widgets/loading_indicator.dart';
 
 class CategoriesView extends StatefulWidget {
   CategoriesView({required this.onCategorySelected});
