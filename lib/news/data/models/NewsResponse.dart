@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:news/models/SourcesResponse.dart';
+import 'package:news/sources/data/models/SourcesResponse.dart';
 
 class NewsResponse {
   final String status;

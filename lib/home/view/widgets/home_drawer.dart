@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:news/home/widgets/drawer_item.dart';
-import 'package:news/utils/app_theme.dart';
+import 'package:news/home/view/widgets/drawer_item.dart';
+import 'package:news/shared/app_theme.dart';
 
 class HomeDrawer extends StatefulWidget {
   HomeDrawer({required this.goToHome});
