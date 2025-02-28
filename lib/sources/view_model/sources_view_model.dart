@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
-import 'package:news/sources/data/sources_data_source.dart';
+import 'package:news/shared/service_locator.dart';
+import 'package:news/sources/data/repositories/sources_repository.dart';
 
 import '../data/models/SourcesResponse.dart';
 
 class SourcesViewModel with ChangeNotifier {
-  SourcesDataSource dataSource = SourcesDataSource();
+  SourcesRepository sourcesRepository =
+      SourcesRepository(ServiceLocator.sourcesDataSource);
   bool isLoading = false;
   String? errorMsg;
   List<Source> sources = [];
@@ -13,13 +15,7 @@ class SourcesViewModel with ChangeNotifier {
     isLoading = true;
     try {
       //success
-      SourcesResponse response = await dataSource.getSources(categoryId);
-      //success
-      if (response.status == "ok" && response.sources != null) //fooooocuss
-        sources = response.sources!;
-      //error
-      else
-        errorMsg = "Failed to get sources";
+      sources = await sourcesRepository.getSources(categoryId);
     } catch (error) {
       //error
       errorMsg = error.toString();
