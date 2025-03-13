@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news/news/view/widgets/news_item.dart';
+import 'package:news/news/view_model/news_states.dart';
 import 'package:news/shared/app_theme.dart';
 import 'package:news/shared/widgets/error_indicator.dart';
 import 'package:news/shared/widgets/loading_indicator.dart';
 import 'package:news/sources/data/models/SourcesResponse.dart';
 import 'package:news/sources/view/widgets/tab_item.dart';
+import 'package:news/sources/view_model/sources_states.dart';
 import 'package:news/sources/view_model/sources_view_model.dart';
-import 'package:provider/provider.dart';
 
 import '../../view_model/news_view_model.dart';
 
@@ -34,18 +36,19 @@ class _NewsViewState extends State<NewsView> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ChangeNotifierProvider(
+        BlocProvider<SourcesViewModel>(
           create: (_) => sourcesViewModel,
-          child: Consumer<SourcesViewModel>(builder: (_, viewModel, __) {
+          child: BlocBuilder<SourcesViewModel, SourcesState>(
+              builder: (context, state) {
             //loading
-            if (viewModel.isLoading)
+            if (state is SourcesLoadingState)
               return LoadingIndicator();
             //error
-            else if (sourcesViewModel.errorMsg != null)
-              return ErrorIndicator(errorMsg: viewModel.errorMsg!);
+            else if (state is SourcesErrorState)
+              return ErrorIndicator(errorMsg: state.errorMsg);
             //success
-            else {
-              List<Source> sources = viewModel.sources;
+            else if (state is SourcesSuccessState) {
+              List<Source> sources = state.sources;
               newsViewModel.getNews(sources[index].id!);
               return DefaultTabController(
                 length: sources.length,
@@ -69,28 +72,31 @@ class _NewsViewState extends State<NewsView> {
                       .toList(),
                 ),
               );
-            }
+            } else
+              return SizedBox();
           }),
         ),
         Expanded(
-          child: ChangeNotifierProvider(
+          child: BlocProvider<NewsViewModel>(
             create: (_) => newsViewModel,
-            child: Consumer<NewsViewModel>(builder: (_, viewModel, __) {
-              if (viewModel.isLoading)
+            child: BlocBuilder<NewsViewModel, NewsState>(
+                builder: (context, state) {
+              if (state is NewsLoadingState)
                 return LoadingIndicator();
-              else if (viewModel.errorMsg != null)
-                return ErrorIndicator(errorMsg: viewModel.errorMsg!);
-              else {
+              else if (state is NewsErrorState)
+                return ErrorIndicator(errorMsg: state.errorMsg);
+              else if (state is NewsSuccessState) {
                 return ListView.separated(
                     padding: EdgeInsets.all(16),
                     separatorBuilder: (context, index) => SizedBox(
                           height: 10,
                         ),
-                    itemCount: viewModel.news.length,
+                    itemCount: state.news.length,
                     itemBuilder: (context, index) => NewsItem(
-                          news: viewModel.news[index],
+                          news: state.news[index],
                         ));
-              }
+              } else
+                return SizedBox();
             }),
           ),
         )
